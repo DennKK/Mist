@@ -6,8 +6,3 @@ from . models import Product
 
 def home(requests):
     return HttpResponse('Hello')
-
-
-class ProductDetailView(DetailView):
-    model = Product
-    query_pk_and_slug = True
