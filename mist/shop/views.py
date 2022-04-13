@@ -1,6 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import Product
+from django.views.generic import ListView
 
-# TEST
+
 def index(requests):
-    return HttpResponse('Hello')
+    return render(requests, 'shop/index.html')
+
+
+class ProductListView(ListView):
+    model = Product
+    context_object_name = 'product_list'
