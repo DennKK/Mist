@@ -3,11 +3,11 @@ from .models import Genre, Developer, Category, Product
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'url': ('name',)}
 
 
 class ProductAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'url': ('name',)}
 
 
 admin.site.register(Genre)

@@ -1,9 +1,10 @@
 from django.db import models
-
+from django.urls import reverse
 
 class Genre(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
     description = models.TextField(default='')
+    url = models.SlugField(max_length=50, unique=True, default='')
 
     def __str__(self):
         return self.name
@@ -12,6 +13,7 @@ class Genre(models.Model):
 class Developer(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(default='')
+    url = models.SlugField(max_length=50, unique=True, default='')
 
     def __str__(self):
         return self.name
@@ -20,7 +22,7 @@ class Developer(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField('')
-    slug = models.SlugField(max_length=50, unique=True)
+    url = models.SlugField(max_length=50, unique=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -32,7 +34,7 @@ class Category(models.Model):
 class Product(models.Model):
     category = models.ManyToManyField(Category)
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True)
+    url = models.SlugField(max_length=50, unique=True)
     description = models.TextField()
     genre = models.ManyToManyField(Genre)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE)
@@ -41,6 +43,9 @@ class Product(models.Model):
     # poster
     # screenshots
     # videos
+
+    def get_absolute_url(self):
+        return reverse('product_detail', kwargs={"slug": self.url})
 
     def __str__(self):
         return self.name
