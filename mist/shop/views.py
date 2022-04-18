@@ -3,6 +3,7 @@ from .models import Product
 from django.views.generic import ListView, DetailView
 from .forms import SignUpForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 
 
 def index(requests):
@@ -36,3 +37,20 @@ def signup(request):
         form = SignUpForm()
     context = {'form': form, }
     return render(request, 'shop/signup.html', context)
+
+
+def login_request(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("index")
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}
+
+    return render(request, 'shop/login.html', context)
