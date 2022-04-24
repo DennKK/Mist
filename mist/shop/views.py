@@ -19,7 +19,6 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model =  Product
     slug_field = 'url'
-
     template_name = 'shop/product_detail.html'
 
 def signup(request):
