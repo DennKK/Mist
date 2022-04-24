@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.views.generic import ListView, DetailView
 from .forms import SignUpForm
@@ -19,8 +19,8 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model =  Product
     slug_field = 'url'
-    template_name = 'shop/product_detail.html'
 
+    template_name = 'shop/product_detail.html'
 
 def signup(request):
     if request.method == 'POST':
