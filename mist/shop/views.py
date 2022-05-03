@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.views.generic import ListView, DetailView
-from .forms import SignUpForm
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
-
-
-def index(requests):
-    return render(requests, 'shop/index.html')
+from .forms import CreateUserForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 class ProductListView(ListView):
@@ -21,35 +18,39 @@ class ProductDetailView(DetailView):
     slug_field = 'url'
     template_name = 'shop/product_detail.html'
 
-def signup(request):
+
+def index(requests):
+    return render(requests, 'shop/index.html')
+
+
+def register_page(request):
+    form = CreateUserForm
+
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = CreateUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            raw_password = form.cleaned_data.get('password1')
-            # login user after signing up
-            user = authenticate(username=user.username, password=raw_password)
-            login(request, user)
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, f'Account was created successful for {user}')
 
-            return redirect('index')
-    else:
-        form = SignUpForm()
-    context = {'form': form, }
-    return render(request, 'shop/signup.html', context)
-
-
-def login_request(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("index")
-    else:
-        form = AuthenticationForm()
+            return redirect('login_page')
     context = {'form': form}
+    return render(request, 'shop/register_page.html', context)
 
-    return render(request, 'shop/login.html', context)
+
+def login_page(request):
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+        else:
+            messages.info(request, 'Oops, thats not a match.')
+
+    context = {}
+    return render(request, 'shop/login_page.html', context)
