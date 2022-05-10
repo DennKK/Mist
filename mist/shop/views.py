@@ -32,8 +32,8 @@ def register_page(request):
             form.save()
             user = form.cleaned_data.get('username')
             messages.success(request, f'Account was created successful for {user}')
-
             return redirect('login_page')
+
     context = {'form': form}
     return render(request, 'shop/register_page.html', context)
 
