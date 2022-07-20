@@ -54,6 +54,7 @@ class Product(models.Model):
 
 
 class UserProductRelationship(models.Model):
+
     Rating_CHOICES = (
         (0, 'No score'),
         (1, 'Poor'),
@@ -62,6 +63,7 @@ class UserProductRelationship(models.Model):
         (4, 'Very good'),
         (5, 'Excellent'),
     )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     rate = models.PositiveSmallIntegerField(choices=Rating_CHOICES, default=0)
