@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreateUserForm, LoginUserForm
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.edit import FormView
-
+from django.views import View
 
 class CreateUserView(FormView):
     template_name = "users/register_page.html"
@@ -16,23 +15,20 @@ class CreateUserView(FormView):
         return render(request, self.template_name, context)
 
     def post(self, request):
-        #if request.method == 'POST':
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, f'Account was created successful for {user}')
+            messages.success(request, f'Account was created successful for {form.cleaned_data["username"]}')
 
             new_user = authenticate(
                 username=form.cleaned_data["username"],
                 password=form.cleaned_data["password1"]
             )
             login(request, new_user)
-            return redirect('index')
+            return redirect('shop:index')
 
         context = {'form': form}
         return render(request, 'users/register_page.html', context)
-
 
 
 class UserLoginView(FormView):
@@ -57,13 +53,21 @@ class UserLoginView(FormView):
             )
             if user is not None:
                 login(request, user)
-                return redirect("index")
+                return redirect("shop:index")
 
             else:
-                messages.info(request, 'Oops, thats not a match.')
+                messages.info(request, "Oops, thats not a match.")
+
 
         context = {
             "form": form,
         }
 
         return render(request, self.template_name, context)
+
+
+class UserLogoutView(View):
+    def get(self, request):
+        logout(request)
+        messages.info(request, "You have successfully logged out.")
+        return redirect("shop:index")
