@@ -7,3 +7,8 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+
+class LoginUserForm(forms.Form):
+    username = forms.CharField()
+    password1 = forms.CharField(widget=forms.PasswordInput)
