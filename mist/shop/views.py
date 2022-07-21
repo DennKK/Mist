@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, UserProductRelationship
 from django.views.generic import ListView, DetailView
-from .forms import CreateUserForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 
