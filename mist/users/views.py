@@ -6,11 +6,18 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 
 
-def register_page(request):
-    form = CreateUserForm
+class CreateUserView(FormView):
+    template_name = "users/register_page.html"
+    form_class = CreateUserForm
 
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
+    def get(self, request):
+        form = self.form_class()
+        context = {"form": form}
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        #if request.method == 'POST':
+        form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('username')
@@ -23,27 +30,9 @@ def register_page(request):
             login(request, new_user)
             return redirect('index')
 
-    context = {'form': form}
-    return render(request, 'users/register_page.html', context)
+        context = {'form': form}
+        return render(request, 'users/register_page.html', context)
 
-
-"""def login_page(request):
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('index')
-        else:
-            messages.info(request, 'Oops, thats not a match.')
-
-    context = {}
-    return render(request, 'shop/login_page.html', context)
-"""
 
 
 class UserLoginView(FormView):
