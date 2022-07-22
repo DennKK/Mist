@@ -71,3 +71,7 @@ class UserLogoutView(View):
         logout(request)
         messages.info(request, "You have successfully logged out.")
         return redirect("shop:index")
+
+# Temporary
+def profile(request):
+    return render(request, "users/profile.html")
