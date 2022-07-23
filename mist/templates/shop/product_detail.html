@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{ product.name }}</h1>
+
+    {% for category in product.category.all %}
+        <p>Category: {{ category }}</p>
+    {% endfor %}
+
+    <p>Description: {{ product.description }}</p>
+
+    {% for genre in product.genre.all %}
+        <p>Genre: {{ genre }}</p>
+    {% endfor %}
+
+    <p>Developer: {{ product.developer }}</p>
+    <p>Release date: {{ product.release_date }}</p>
+    <p>Price: {{ product.price }}$</p>
+{% endblock content %}

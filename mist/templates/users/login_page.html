@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.username }}
+        <br>
+        {{ form.password1 }}
+        <button type="submit" class="btn btn-primary">Primary</button>
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </form>
+{% endblock content %}

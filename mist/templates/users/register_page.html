@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Sign up</h2>
+    <form method="post">
+        {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                    {{ form.username.label }}
+                </div>
+                <div class="col-12">
+                    {{ form.username }}
+                </div>
+
+                <div class="col-12">
+                    {{ form.email.label }}
+                </div>
+                <div class="col-12">
+                    {{ form.email }}
+                </div>
+
+                <div class="col-12">
+                    {{ form.password1.label }}
+                </div>
+                <div class="col-12">
+                    {{ form.password1 }}
+                </div>
+
+                <div class="col-12">
+                    {{ form.password2.label }}
+                </div>
+                <div class="col-12">
+                    {{ form.password2 }}
+                </div>
+            </div>
+        {{ form.errors }}
+        <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+{% endblock content %}
