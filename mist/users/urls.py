@@ -6,9 +6,9 @@ from .views import UserLoginView, CreateUserView, UserLogoutView
 app_name = "users"
 
 urlpatterns = [
-    path('register/', CreateUserView.as_view(), name="register_page"),
-    path('login/', UserLoginView.as_view(), name="login_page"),
-    path('logout/', UserLogoutView.as_view(), name="logout_page"),
+    path('register/', CreateUserView.as_view(), name="register"),
+    path('login/', UserLoginView.as_view(), name="login"),
+    path('logout/', UserLogoutView.as_view(), name="logout"),
 
     # Temporary
     path('profile/', views.profile, name="profile")

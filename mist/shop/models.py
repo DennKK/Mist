@@ -47,7 +47,7 @@ class Product(models.Model):
     # videos
 
     def get_absolute_url(self):
-        return reverse('product_detail', kwargs={"slug": self.url})
+        return reverse('shop:product_detail', kwargs={"slug": self.url})
 
     def __str__(self):
         return self.name
