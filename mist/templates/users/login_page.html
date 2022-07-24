@@ -2,12 +2,17 @@
 {% block content %}
     <form method="post">
         {% csrf_token %}
-        {{ form.username }}
-        <br>
-        {{ form.password1 }}
-        <button type="submit" class="btn btn-primary">Primary</button>
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
+        <div class="row">
+            {% for field in form %}
+                <div class="col-12">
+                    {{ field.label }}
+                </div>
+                <div class="col-12">
+                    {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        {{ form.errors }}
     </form>
 {% endblock content %}

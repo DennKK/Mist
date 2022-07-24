@@ -4,34 +4,16 @@
     <form method="post">
         {% csrf_token %}
             <div class="row">
-                <div class="col-12">
-                    {{ form.username.label }}
-                </div>
-                <div class="col-12">
-                    {{ form.username }}
-                </div>
-
-                <div class="col-12">
-                    {{ form.email.label }}
-                </div>
-                <div class="col-12">
-                    {{ form.email }}
-                </div>
-
-                <div class="col-12">
-                    {{ form.password1.label }}
-                </div>
-                <div class="col-12">
-                    {{ form.password1 }}
-                </div>
-
-                <div class="col-12">
-                    {{ form.password2.label }}
-                </div>
-                <div class="col-12">
-                    {{ form.password2 }}
-                </div>
+                {% for field in form %}
+                    <div class="col-12">
+                        {{ field.label }}
+                    </div>
+                    <div class="col-12">
+                        {{ field }}
+                    </div>
+                {% endfor %}
             </div>
+
         {{ form.errors }}
         <button class="btn btn-primary" type="submit">Submit</button>
   </form>
