@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, UserProductRelationship
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 
@@ -21,7 +21,7 @@ class ProductDetailView(DetailView):
         context['user_product_relations'] = UserProductRelationship.objects.all()
         return context
 
-def index(request):
-    return render(request, 'shop/index.html')
+class IndexView(TemplateView):
+    template_name = 'shop/index.html'
 
 

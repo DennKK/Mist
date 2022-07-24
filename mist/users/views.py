@@ -3,7 +3,7 @@ from .forms import CreateUserForm, LoginUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.edit import FormView
-from django.views import View
+from django.views.generic import View, TemplateView
 from django.urls import reverse_lazy
 
 class CreateUserView(FormView):
@@ -19,7 +19,9 @@ class CreateUserView(FormView):
             username=form.cleaned_data["username"],
             password=form.cleaned_data["password1"]
         )
+
         login(self.request, new_user)
+
         return redirect(self.success_url)
 
 
@@ -44,6 +46,6 @@ class UserLogoutView(View):
         messages.info(request, "You have successfully logged out.")
         return redirect("shop:index")
 
-# Temporary
-def profile(request):
-    return render(request, "users/profile.html")
+
+class UserProfileView(TemplateView):
+    template_name = "users/profile.html"
