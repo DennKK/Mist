@@ -4,66 +4,38 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views import View
+from django.urls import reverse_lazy
 
 class CreateUserView(FormView):
     template_name = "users/register_page.html"
     form_class = CreateUserForm
+    success_url = reverse_lazy("shop:index")
 
-    def get(self, request):
-        form = self.form_class()
-        context = {"form": form}
-        return render(request, self.template_name, context)
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, f'Account was created successful for {form.cleaned_data["username"]}')
 
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Account was created successful for {form.cleaned_data["username"]}')
-
-            new_user = authenticate(
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password1"]
-            )
-            login(request, new_user)
-            return redirect('shop:index')
-
-        context = {'form': form}
-        return render(request, 'users/register_page.html', context)
+        new_user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password1"]
+        )
+        login(self.request, new_user)
+        return redirect(self.success_url)
 
 
 class UserLoginView(FormView):
     template_name = "users/login_page.html"
     form_class = LoginUserForm
+    success_url = reverse_lazy("shop:index")
 
-    def get(self, request):
-        form = self.form_class()
-        message = ""
-        context = {
-            "form": form,
-            "message": message
-        }
-        return render(request, self.template_name, context)
+    def form_valid(self, form):
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password"]
+        )
 
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password1"]
-            )
-            if user is not None:
-                login(request, user)
-                return redirect("shop:index")
-
-            else:
-                messages.info(request, "Oops, thats not a match.")
-
-
-        context = {
-            "form": form,
-        }
-
-        return render(request, self.template_name, context)
+        login(self.request, user)
+        return redirect(self.success_url)
 
 
 class UserLogoutView(View):
