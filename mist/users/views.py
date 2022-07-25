@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreateUserForm, LoginUserForm
+from .forms import CreateUserForm, LoginUserForm, EditProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views.generic import View, TemplateView
 from django.urls import reverse_lazy
+from .models import Profile
+from django.contrib.auth.models import User
+
 
 class CreateUserView(FormView):
     template_name = "users/register_page.html"
@@ -21,8 +24,7 @@ class CreateUserView(FormView):
         )
 
         login(self.request, new_user)
-
-        return redirect(self.success_url)
+        return super().form_valid(form)
 
 
 class UserLoginView(FormView):
@@ -37,7 +39,7 @@ class UserLoginView(FormView):
         )
 
         login(self.request, user)
-        return redirect(self.success_url)
+        return super().form_valid(form)
 
 
 class UserLogoutView(View):
@@ -47,5 +49,18 @@ class UserLogoutView(View):
         return redirect("shop:index")
 
 
-class UserProfileView(TemplateView):
-    template_name = "users/profile.html"
+class UserProfileView(View):
+    def get(self, request):
+        form = EditProfileForm(instance=request.user.profile)
+        contex = {"form": form}
+        return render(request, "users/profile.html", contex)
+
+    def post(self, request):
+        form = EditProfileForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile,
+        )
+        if form.is_valid():
+            form.save()
+            return redirect("users:profile")
