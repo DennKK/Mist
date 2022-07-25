@@ -42,7 +42,7 @@ class Product(models.Model):
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE)
     release_date = models.DateField()
     price = models.PositiveIntegerField()
-    # poster
+    poster = models.ImageField(default="images/default_photos/poster.png", upload_to="images/posters")
     # screenshots
     # videos
 
