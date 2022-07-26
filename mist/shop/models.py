@@ -68,6 +68,8 @@ class UserProductRelationship(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     rate = models.PositiveSmallIntegerField(choices=Rating_CHOICES, default=0)
     recommended = models.BooleanField(default=False)
+    body = models.TextField(default="")
 
     def __str__(self):
         return f'Username: {self.user.username}, product name: {self.product.name}, rate: {self.rate}'
+    

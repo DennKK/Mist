@@ -49,11 +49,15 @@ class UserLogoutView(View):
         return redirect("shop:index")
 
 
-class UserProfileView(View):
+class UserProfileView(TemplateView):
+    template_name = "users/profile.html"
+
+
+class EditProfileView(View):
     def get(self, request):
         form = EditProfileForm(instance=request.user.profile)
         contex = {"form": form}
-        return render(request, "users/profile.html", contex)
+        return render(request, "users/edit_profile.html", contex)
 
     def post(self, request):
         form = EditProfileForm(

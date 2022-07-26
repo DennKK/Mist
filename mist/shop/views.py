@@ -3,6 +3,9 @@ from .models import Product, UserProductRelationship
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.views.generic.edit import FormView
+from .forms import ReviewForm
+from django.urls import reverse_lazy
 
 
 class ProductListView(ListView):
@@ -23,5 +26,4 @@ class ProductDetailView(DetailView):
 
 class IndexView(TemplateView):
     template_name = 'shop/index.html'
-
 
