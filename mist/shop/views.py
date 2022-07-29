@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import FormView
 from .forms import ReviewForm
 from django.urls import reverse_lazy, reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ProductListView(ListView):
@@ -17,20 +18,51 @@ class ProductListView(ListView):
 
 class ProductDisplay(DetailView):
     model = Product
+    context_object_name = "product"
     slug_field = "url"
     template_name = "shop/product_detail.html"
-    context_object_name = "product"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = ReviewForm()
+        context["form"] = ReviewForm()
+
         return context
 
 
 class PostReview(SingleObjectMixin, FormView):
     model = Product
     form_class = ReviewForm
+    slug_field = "url"
     template_name = 'shop/product_detail.html'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    '''def get_form_kwargs(self):
+        kwargs = super(PostReview, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs'''
+
+    def form_valid(self, form):
+        try:
+            review = self.request.user.user_product_relationship.get(product=self.object)
+            form = ReviewForm(
+                self.request.POST,
+                instance=review
+            )
+        except ObjectDoesNotExist:
+            form = form.save(commit=False)
+            form.product = self.object
+            form.user = self.request.user
+
+        form.save()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        product = self.get_object()
+        return reverse('shop:product_detail', kwargs={'slug': product.url}) + '#review'
 
 
 class ProductDetailView(View):
@@ -38,6 +70,9 @@ class ProductDetailView(View):
         view = ProductDisplay.as_view()
         return view(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        view = PostReview.as_view()
+        return view(request, *args, **kwargs)
 
 
 '''
