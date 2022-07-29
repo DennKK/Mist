@@ -24,7 +24,11 @@ class ProductDisplay(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = ReviewForm()
+        try:
+            review = self.request.user.user_product_relationship.get(product=kwargs['object'])
+            context["form"] = ReviewForm(instance=review)
+        except ObjectDoesNotExist:
+            context["form"] = ReviewForm()
 
         return context
 
@@ -47,6 +51,7 @@ class PostReview(SingleObjectMixin, FormView):
     def form_valid(self, form):
         try:
             review = self.request.user.user_product_relationship.get(product=self.object)
+            print(f'{self.object} HEY')
             form = ReviewForm(
                 self.request.POST,
                 instance=review
