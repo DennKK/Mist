@@ -15,7 +15,7 @@ class Genre(models.Model):
 class Developer(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(default='')
-    url = models.SlugField(max_length=50, unique=True, default='')
+    url = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -23,7 +23,7 @@ class Developer(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField('')
+    description = models.TextField(default='')
     url = models.SlugField(max_length=50, unique=True)
 
     class Meta:
@@ -39,7 +39,7 @@ class Product(models.Model):
     url = models.SlugField(max_length=50, unique=True)
     description = models.TextField()
     genre = models.ManyToManyField(Genre)
-    developer = models.ForeignKey(Developer, on_delete=models.CASCADE)
+    developer = models.ManyToManyField(Developer)
     release_date = models.DateField()
     price = models.PositiveIntegerField()
     poster = models.ImageField(default="images/default_photos/poster.png", upload_to="images/posters")
