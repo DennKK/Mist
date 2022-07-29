@@ -43,11 +43,6 @@ class PostReview(SingleObjectMixin, FormView):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
 
-    '''def get_form_kwargs(self):
-        kwargs = super(PostReview, self).get_form_kwargs()
-        kwargs['request'] = self.request
-        return kwargs'''
-
     def form_valid(self, form):
         try:
             review = self.request.user.user_product_relationship.get(product=self.object)
@@ -79,6 +74,9 @@ class ProductDetailView(View):
         view = PostReview.as_view()
         return view(request, *args, **kwargs)
 
+
+class IndexView(TemplateView):
+    template_name = 'shop/index.html'
 
 '''
 # TEMPORARY
@@ -119,19 +117,3 @@ class ProductDetailView(View):
                 new_review.save()
                 return redirect("shop:products")
 '''
-
-'''
-class ProductDetailView(DetailView):
-    model =  Product
-    slug_field = 'url'
-    template_name = 'shop/product_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductDetailView, self).get_context_data(**kwargs)
-        context['user_product_relations'] = UserProductRelationship.objects.all()
-        return context
-'''
-
-
-class IndexView(TemplateView):
-    template_name = 'shop/index.html'
