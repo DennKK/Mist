@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, UserProductRelationship
+from .models import Product, Review
 from django.views.generic import ListView, DetailView, TemplateView, View, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -25,7 +25,7 @@ class ProductDisplay(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            review = self.request.user.user_product_relationship.get(product=kwargs['object'])
+            review = self.request.user.review_set.get(product=kwargs['object'])
             context["form"] = ReviewForm(instance=review)
         except ObjectDoesNotExist:
             context["form"] = ReviewForm()
@@ -45,7 +45,7 @@ class PostReview(SingleObjectMixin, FormView):
 
     def form_valid(self, form):
         try:
-            review = self.request.user.user_product_relationship.get(product=self.object)
+            review = self.request.user.review_set.get(product=self.object)
             print(f'{self.object} HEY')
             form = ReviewForm(
                 self.request.POST,
@@ -85,26 +85,18 @@ class ProductDetailView(View):
         product = get_object_or_404(Product, url=slug)
         try:
             review = request.user.user_product_relationship.get(product=product)
-            form = ReviewForm(
-                instance=review
-            )
+            form = ReviewForm(instance=review)
         except:
             form = ReviewForm()
 
-        context = {
-            "product": product,
-            "form": form,
-        }
+        context = {"product": product, "form": form,}
         return render(request, "shop/product_detail.html", context)
 
     def post(self, request, slug):
         #product = get_object_or_404(Product, url=slug)
         try:
             review = request.user.user_product_relationship.get(product=self.product)
-            form = ReviewForm(
-                request.POST,
-                instance=review
-            )
+            form = ReviewForm(request.POST, instance=review)
             if form.is_valid():
                 form.save()
             return redirect("shop:products")
