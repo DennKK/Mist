@@ -121,3 +121,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart'
+
+# TEST COMMIT
