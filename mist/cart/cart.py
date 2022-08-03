@@ -1,13 +1,16 @@
+from decimal import Decimal
 from django.conf import settings
+
 from shop.models import Product
+
 
 class Cart(object):
     def __init__(self, request):
-        self.sessions = request.sessions
+        self.session = request.session
 
-        cart = self.sessions.get(settings.CART_SESSION_ID)
+        cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
-            cart = self.sessions[settings.CART_SESSION_ID] = {}
+            cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
     def add(self, product, quantity=1, update_quantity=False):
@@ -32,11 +35,28 @@ class Cart(object):
             del self.cart[product_id]
             self.save()
 
-
     def save(self):
-        self.sessions[settings.CART_SESSION_ID] = self.cart
-        self.sessions.modified = True
+        self.session[settings.CART_SESSION_ID] = self.cart
+        self.session.modified = True
 
     def __iter__(self):
         product_ids = self.cart.keys()
-        
+        products = Product.objects.filter(id__in=product_ids)
+        for product in products:
+            self.cart[str(product.id)]["product"] = product
+
+        for item in self.cart:
+            item["price"] = Decimal(item["price"])
+            item["total_price"] = item["quantity"] * item["price"]
+            yield item
+
+    def __len__(self):
+        return sum(item["quantity"] for item in self.cart.values())
+
+    def get_total_price(self):
+        return sum(Decimal(item["price"]) * item["quantity"] for item in self.cart.values())
+
+    def clear(self):
+        del self.cart[settings.CART_SESSION_ID]
+        self.session.modified = True
+
