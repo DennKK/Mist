@@ -1,12 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Review
-from django.views.generic import ListView, DetailView, TemplateView, View, FormView
+from .models import Product
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import FormView
 from .forms import ReviewForm
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 
 

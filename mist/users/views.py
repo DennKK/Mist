@@ -1,12 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .forms import CreateUserForm, LoginUserForm, EditProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views.generic import View, TemplateView
 from django.urls import reverse_lazy
-from .models import Profile
-from django.contrib.auth.models import User
 
 
 class CreateUserView(FormView):
